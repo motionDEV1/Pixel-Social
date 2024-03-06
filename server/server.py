@@ -6,7 +6,7 @@ import os
 # Create custom HTTPRequestHandler class
 class MyHTTPRequestHandler(BaseHTTPRequestHandler):
     def do_GET(self):
-        rootdir = 'server/index.html'  # Set the directory where your HTML files are located
+        rootdir = '/index.html'  # Set the directory where your HTML files are located
         try:
             if self.path.endswith('.html'):
                 f = open(rootdir + self.path)  # Open the requested file
