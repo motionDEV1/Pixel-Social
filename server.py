@@ -17,7 +17,7 @@ class MyHTTPRequestHandler(BaseHTTPRequestHandler):
                 f.close()
                 return
         except IOError:
-            self.send_error(404, 'File nost found')
+            self.send_error(404, 'File not found')
 
 def run():
     print('HTTP server is starting...')
