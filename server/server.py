@@ -1,28 +1,30 @@
-# Python 3 server example
+
+
 from http.server import BaseHTTPRequestHandler, HTTPServer
+import os
 
-hostName = "localhost"
-serverPort = 8080
-
-class MyServer(BaseHTTPRequestHandler):
+# Create custom HTTPRequestHandler class
+class MyHTTPRequestHandler(BaseHTTPRequestHandler):
     def do_GET(self):
-        self.send_response(200)
-        self.send_header("Content-type", "text/html")
-        self.end_headers()
-        self.wfile.write(bytes("<html><head><title>Pixel Server</title></head>", "utf-8"))
-        self.wfile.write(bytes(f"<p>Request: {self.path}</p>", "utf-8"))
-        self.wfile.write(bytes("<body>", "utf-8"))
-        self.wfile.write(bytes("<p>This is the Pixel server up and running.</p>", "utf-8"))
-        self.wfile.write(bytes("""<p>APIv0
-                                will be updated at Beta 2</p>""", "utf-8"))
-        self.wfile.write(bytes("</body></html>", "utf-8"))
+        rootdir = 'server/index.html'  # Set the directory where your HTML files are located
+        try:
+            if self.path.endswith('.html'):
+                f = open(rootdir + self.path)  # Open the requested file
+                self.send_response(200)  # Send a 200 OK response
+                self.send_header('Content-type', 'text/html')
+                self.end_headers()
+                self.wfile.write(f.read().encode())  # Send file content to the client
+                f.close()
+                return
+        except IOError:
+            self.send_error(404, 'File not found')
 
-if __name__ == "__main__":
-    webServer = HTTPServer((hostName, serverPort), MyServer)
-    print(f"Server started at http://{hostName}:{serverPort}")
-    try:
-        webServer.serve_forever()
-    except KeyboardInterrupt:
-        pass
-    webServer.server_close()
-    print("Server stopped.")
+def run():
+    print('HTTP server is starting...')
+    server_address = ('127.0.0.1', 8000)  # Set the IP address and port
+    httpd = HTTPServer(server_address, MyHTTPRequestHandler)
+    print('HTTP server is running...')
+    httpd.serve_forever()
+
+if __name__ == '__main__':
+    run()
